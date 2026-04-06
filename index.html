@@ -8,6 +8,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0b0b1e">
     <title>Tetris</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%230b0b1e'/><rect x='20' y='20' width='60' height='60' rx='8' fill='%2322d3ee'/><rect x='90' y='20' width='60' height='60' rx='8' fill='%23845ef7'/><rect x='20' y='90' width='60' height='60' rx='8' fill='%23f472b6'/><rect x='90' y='90' width='60' height='60' rx='8' fill='%2334d399'/></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -912,6 +914,11 @@ if(highScore>0){document.getElementById('high-score-start').style.display='';doc
 
 // Initial resize
 resizeCanvas();
+
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
 </script>
 </body>
 </html>
