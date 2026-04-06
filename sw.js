@@ -1,8 +1,8 @@
-const CACHE = 'tetris-v2';
-const FILES = ['./', './index.html', './manifest.json'];
+const CACHE = 'tetris-v4';
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
+  // HTML cache'leme - sadece manifest
+  e.waitUntil(caches.open(CACHE).then(c => c.add('./manifest.json')));
   self.skipWaiting();
 });
 
@@ -14,21 +14,13 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // HTML için her zaman önce ağdan al, güncelleme gelsin
+  // HTML için asla cache kullanma, her zaman ağdan al
   if (e.request.mode === 'navigate') {
     e.respondWith(
-      fetch(e.request)
-        .then(res => {
-          const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-          return res;
-        })
-        .catch(() => caches.match(e.request))
+      fetch(e.request.url, { cache: 'no-store' })
+        .catch(() => caches.match('./index.html'))
     );
     return;
   }
-  // Diğer dosyalar: cache-first
-  e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
-  );
+  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
 });

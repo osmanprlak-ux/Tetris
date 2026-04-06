@@ -970,21 +970,22 @@ if(highScore>0){document.getElementById('high-score-start').style.display='';doc
 // Initial resize
 resizeCanvas();
 
-// PWA Service Worker - otomatik güncelleme
+// PWA Service Worker
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
-    .then(reg => {
-      reg.addEventListener('updatefound', () => {
-        const nw = reg.installing;
-        nw.addEventListener('statechange', () => {
-          if (nw.state === 'activated') window.location.reload();
-        });
-      });
-    });
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    window.location.reload();
-  });
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' });
 }
+
+// iOS bfcache'den gelince zorla yenile
+window.addEventListener('pageshow', e => {
+  if (e.persisted) window.location.reload(true);
+});
+
+// Uygulama arka plandan öne gelince SW güncelle
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => reg.update());
+  }
+});
 </script>
 </body>
 </html>
