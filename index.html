@@ -493,6 +493,22 @@
 </div>
 
 <script>
+// ==================== ZORLA GÜNCELLEME ====================
+(function() {
+  const VER = '7';
+  const stored = localStorage.getItem('tetris-ver');
+  if (stored !== VER) {
+    localStorage.setItem('tetris-ver', VER);
+    if (stored !== null) {
+      // Eski versiyon var, cache temizle ve yenile
+      const clearAll = [];
+      if ('caches' in window) clearAll.push(caches.keys().then(ks => Promise.all(ks.map(k => caches.delete(k)))));
+      if ('serviceWorker' in navigator) clearAll.push(navigator.serviceWorker.getRegistrations().then(rs => Promise.all(rs.map(r => r.unregister()))));
+      Promise.all(clearAll).then(() => window.location.reload(true));
+    }
+  }
+})();
+
 // ==================== AUDIO ====================
 class AudioEngine {
     constructor() { this.enabled = true; this.ctx = null; }
